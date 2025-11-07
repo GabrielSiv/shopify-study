@@ -1,0 +1,14 @@
+{
+  "name": "horizon-theme-custom",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "shopify theme dev --store=lojagsiv.myshopify.com",
+    "format": "prettier --write .",
+    "lint": "shopify theme check"
+  },
+  "devDependencies": {
+    "@shopify/prettier-plugin-liquid": "^1.10.0",
+    "prettier": "^3.2.0",
+    "prettier-plugin-liquid": "latest"
+  }
+}
