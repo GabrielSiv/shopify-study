@@ -214,6 +214,26 @@
               },
               "block_order": []
             },
+            "model_info_hE4b6X": {
+              "type": "model-info",
+              "name": "Model info",
+              "settings": {
+                "heading": "",
+                "heading_style": "heading",
+                "model_label": "",
+                "size_label": "",
+                "alignment": "left",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 8,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
             "text_aEtTtq": {
               "type": "text",
               "name": "Product description",
@@ -246,6 +266,7 @@
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
+            "model_info_hE4b6X",
             "text_aEtTtq"
           ]
         }
