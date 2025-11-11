@@ -1,25 +1,59 @@
 {%- liquid
-    assign block_settings = block.settings
-    assign model_info_reference = closest.product.metafields.models.model_info
-    assign model_info = nil
-  
-    if model_info_reference and model_info_reference.value
-      assign model_info = model_info_reference.value
+  assign block_settings = block.settings
+  assign model_info_reference = closest.product.metafields.models.model_info
+  assign model_info = nil
+
+  if model_info_reference and model_info_reference.value
+    assign model_info = model_info_reference.value
+  endif
+
+  assign model_name = ''
+  assign wearing_size_from_metaobject = ''
+  assign bust_measurement = ''
+  assign height_measurement = ''
+  assign waist_measurement = ''
+  assign hips_measurement = ''
+
+  if model_info != nil
+    assign model_name = model_info.model | default: model_info.name | default: model_info.title
+    assign wearing_size_from_metaobject = model_info.wearing_size | default: model_info.size | default: model_info.wearing_size_text
+
+    if model_info.bust != blank
+      assign bust_measurement = model_info.bust
     endif
-  
-    assign model_name = ''
-    assign wearing_size = ''
-  
-    if model_info != nil
-      assign model_name = model_info.model
-      assign wearing_size = model_info.wearing_size
+    if model_info.height != blank
+      assign height_measurement = model_info.height
     endif
-  
-    assign has_content = false
-    if model_name != blank or wearing_size != blank
-      assign has_content = true
+    if model_info.waist != blank
+      assign waist_measurement = model_info.waist
     endif
-  -%}
+    if model_info.hips != blank
+      assign hips_measurement = model_info.hips
+    endif
+  endif
+
+  assign product_wearing_size = ''
+  assign product_wearing_size_metafield = closest.product.metafields.models.wearing_size
+
+  if product_wearing_size_metafield != blank
+    assign product_wearing_size = product_wearing_size_metafield.value | default: product_wearing_size_metafield
+  endif
+
+  if product_wearing_size == ''
+    assign product_wearing_size_custom = closest.product.metafields.custom.wearing_size
+    if product_wearing_size_custom != blank
+      assign product_wearing_size = product_wearing_size_custom.value | default: product_wearing_size_custom
+    endif
+  endif
+
+  assign model_name = model_name | strip
+  assign wearing_size = wearing_size_from_metaobject | default: product_wearing_size | strip
+
+  assign has_content = false
+  if model_name != blank or wearing_size != blank or bust_measurement != blank or height_measurement != blank or waist_measurement != blank or hips_measurement != blank
+    assign has_content = true
+  endif
+-%}
   
   {% if has_content %}
     <div
@@ -37,29 +71,53 @@
         </p>
       {% endif %}
   
-      <dl class="model-info-block__list">
-        {% if model_name != blank %}
-          <div class="model-info-block__item">
-            <dt class="model-info-block__term">
-              {{ block_settings.model_label | default: 'Model' }}
-            </dt>
-            <dd class="model-info-block__definition">
-              {{ model_name }}
-            </dd>
+      <div class="model-info-block__card">
+        {% if model_name != blank or wearing_size != blank %}
+          <div class="model-info-block__identity">
+            {% if model_name != blank %}
+              <div class="model-info-block__identity-item">
+                <span class="model-info-block__label">{{ block_settings.model_label | default: 'Model' }}</span>
+                <span class="model-info-block__value">{{ model_name }}</span>
+              </div>
+            {% endif %}
+            {% if wearing_size != blank %}
+              <div class="model-info-block__identity-item model-info-block__identity-item--pill">
+                <span class="model-info-block__label">{{ block_settings.size_label | default: 'Wearing size' }}</span>
+                <span class="model-info-block__pill">{{ wearing_size }}</span>
+              </div>
+            {% endif %}
           </div>
         {% endif %}
-  
-        {% if wearing_size != blank %}
-          <div class="model-info-block__item">
-            <dt class="model-info-block__term">
-              {{ block_settings.size_label | default: 'Wearing size' }}
-            </dt>
-            <dd class="model-info-block__definition">
-              {{ wearing_size }}
-            </dd>
+
+        {% if bust_measurement != blank or height_measurement != blank or waist_measurement != blank or hips_measurement != blank %}
+          <div class="model-info-block__metrics">
+            {% if height_measurement != blank %}
+              <div class="model-info-block__metric">
+                <span class="model-info-block__metric-label">{{ block_settings.height_label | default: 'Height' }}</span>
+                <span class="model-info-block__metric-value">{{ height_measurement.value }}</span>
+              </div>
+            {% endif %}
+            {% if bust_measurement != blank %}
+              <div class="model-info-block__metric">
+                <span class="model-info-block__metric-label">{{ block_settings.bust_label | default: 'Bust' }}</span>
+                <span class="model-info-block__metric-value">{{ bust_measurement.value  }}</span>
+              </div>
+            {% endif %}
+            {% if waist_measurement != blank %}
+              <div class="model-info-block__metric">
+                <span class="model-info-block__metric-label">{{ block_settings.waist_label | default: 'Waist' }}</span>
+                <span class="model-info-block__metric-value">{{ waist_measurement.value  }}</span>
+              </div>
+            {% endif %}
+            {% if hips_measurement != blank %}
+              <div class="model-info-block__metric">
+                <span class="model-info-block__metric-label">{{ block_settings.hips_label | default: 'Hips' }}</span>
+                <span class="model-info-block__metric-value">{{ hips_measurement.value  }}</span>
+              </div>
+            {% endif %}
           </div>
         {% endif %}
-      </dl>
+      </div>
     </div>
   {% elsif request.design_mode %}
     <div
@@ -80,48 +138,121 @@
     </div>
   {% endif %}
   
-  {% stylesheet %}
-    .model-info-block {
-      display: grid;
-      gap: var(--padding-sm, 12px);
+{% stylesheet %}
+  .model-info-block {
+    display: grid;
+    gap: clamp(12px, 2vw, 20px);
+  }
+
+  .model-info-block__heading {
+    margin: 0;
+  }
+
+  .model-info-block__card {
+    display: grid;
+    gap: clamp(16px, 2.5vw, 24px);
+    padding: clamp(16px, 3vw, 28px);
+    border-radius: var(--radius-card, 18px);
+    background: linear-gradient(
+        135deg,
+        rgb(var(--color-background-rgb, 255 255 255) / 0.95),
+        rgb(var(--color-background-secondary-rgb, 248 248 248) / 0.85)
+      );
+    border: 1px solid rgb(var(--color-border-rgb, 0 0 0) / 0.08);
+    box-shadow: 0 18px 40px rgb(var(--color-shadow-rgb, 10 22 70) / 0.08);
+  }
+
+  .model-info-block__identity {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(12px, 2vw, 18px);
+    align-items: center;
+  }
+
+  .model-info-block__identity-item {
+    display: grid;
+    gap: 6px;
+    min-width: 140px;
+  }
+
+  .model-info-block__identity-item--pill {
+    align-items: flex-start;
+  }
+
+  .model-info-block__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: var(--font-paragraph--weight, 500);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.55));
+  }
+
+  .model-info-block__value {
+    font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+    font-weight: var(--font-heading--weight, 600);
+    color: rgb(var(--color-foreground-rgb));
+  }
+
+  .model-info-block__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: var(--font-paragraph--weight-bold, 600);
+    background: rgb(var(--color-accent-rgb, 0 122 255) / 0.15);
+    color: rgb(var(--color-accent-rgb, 0 122 255));
+  }
+
+  .model-info-block__metrics {
+    display: grid;
+    gap: clamp(12px, 2vw, 18px);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  .model-info-block__metric {
+    display: grid;
+    gap: 6px;
+    padding: clamp(14px, 2.2vw, 18px);
+    border-radius: var(--radius-btn, 14px);
+    background: rgb(var(--color-background-rgb, 255 255 255) / 1);
+    border: 1px solid rgb(var(--color-border-rgb, 0 0 0) / 0.08);
+    box-shadow: inset 0 0 0 1px rgb(var(--color-border-rgb, 0 0 0) / 0.03);
+  }
+
+  .model-info-block__metric-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.55));
+  }
+
+  .model-info-block__metric-value {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: var(--font-heading--weight, 600);
+    color: rgb(var(--color-foreground-rgb));
+  }
+
+  .model-info-block--placeholder {
+    border: 1px dashed rgb(var(--color-border-rgb, 0 0 0) / 0.25);
+    border-radius: var(--radius-card, 18px);
+    padding: clamp(16px, 3vw, 28px);
+    background: rgb(var(--color-background-rgb, 255 255 255) / 0.6);
+  }
+
+  .model-info-block__placeholder-note {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.65));
+  }
+
+  @media (max-width: 480px) {
+    .model-info-block__identity-item {
+      min-width: 100%;
     }
-  
-    .model-info-block__heading {
-      margin: 0;
-    }
-  
-    .model-info-block__list {
-      margin: 0;
-      display: grid;
-      gap: var(--padding-xs, 8px);
-    }
-  
-    .model-info-block__item {
-      display: flex;
-      gap: var(--padding-xs, 8px);
-      align-items: baseline;
-    }
-  
-    .model-info-block__term {
-      font-weight: var(--font-paragraph--weight-bold, 600);
-      margin: 0;
-    }
-  
-    .model-info-block__definition {
-      margin: 0;
-    }
-  
-    .model-info-block--placeholder {
-      border: 1px dashed rgb(var(--color-border-rgb, 0 0 0) / 0.2);
-      border-radius: var(--radius-card, 8px);
-    }
-  
-    .model-info-block__placeholder-note {
-      margin: 0;
-      font-size: min(0.9em, var(--font-paragraph--size));
-      color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.65));
-    }
-  {% endstylesheet %}
+  }
+{% endstylesheet %}
   
   {% schema %}
   {
@@ -170,6 +301,30 @@
         "label": "Size label",
         "default": "Wearing size"
       },
+    {
+      "type": "text",
+      "id": "height_label",
+      "label": "Height label",
+      "default": "Height"
+    },
+    {
+      "type": "text",
+      "id": "bust_label",
+      "label": "Bust label",
+      "default": "Bust"
+    },
+    {
+      "type": "text",
+      "id": "waist_label",
+      "label": "Waist label",
+      "default": "Waist"
+    },
+    {
+      "type": "text",
+      "id": "hips_label",
+      "label": "Hips label",
+      "default": "Hips"
+    },
       {
         "type": "select",
         "id": "alignment",
