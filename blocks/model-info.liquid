@@ -33,17 +33,18 @@
   endif
 
   assign product_wearing_size = ''
-  assign product_wearing_size_metafield = closest.product.metafields.models.wearing_size
+  assign product_wearing_size_metafield = ''
+
+  if closest.product.metafields.custom and closest.product.metafields.custom.wearing_size != blank
+    assign product_wearing_size_metafield = closest.product.metafields.custom.wearing_size
+  elsif closest.product.metafields.model and closest.product.metafields.model.wearing_size != blank
+    assign product_wearing_size_metafield = closest.product.metafields.model.wearing_size
+  elsif closest.product.metafields.models and closest.product.metafields.models.wearing_size != blank
+    assign product_wearing_size_metafield = closest.product.metafields.models.wearing_size
+  endif
 
   if product_wearing_size_metafield != blank
     assign product_wearing_size = product_wearing_size_metafield.value | default: product_wearing_size_metafield
-  endif
-
-  if product_wearing_size == ''
-    assign product_wearing_size_custom = closest.product.metafields.custom.wearing_size
-    if product_wearing_size_custom != blank
-      assign product_wearing_size = product_wearing_size_custom.value | default: product_wearing_size_custom
-    endif
   endif
 
   assign model_name = model_name | strip
@@ -54,7 +55,7 @@
     assign has_content = true
   endif
 -%}
-  
+
   {% if has_content %}
     <div
       class="model-info-block spacing-style border-style"
@@ -300,7 +301,7 @@
         "id": "size_label",
         "label": "Size label",
         "default": "Wearing size"
-      },
+    },
     {
       "type": "text",
       "id": "height_label",

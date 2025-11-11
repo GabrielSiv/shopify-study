@@ -156,7 +156,10 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text_xrnftG", "price_tVjtKg"]
+              "block_order": [
+                "text_xrnftG",
+                "price_tVjtKg"
+              ]
             },
             "divider_VJhene": {
               "type": "_divider",
@@ -224,8 +227,12 @@
               "settings": {
                 "heading": "Informações da modelo",
                 "heading_style": "heading",
-                "model_label": "{{ closest.product.metafields.models.model_info.value.name.value }}{{ closest.product.metafields.models.model_info.value.bust | metafield_text }}{{ closest.product.metafields.models.model_info.value.height | metafield_text }}{{ closest.product.metafields.models.model_info.value.waist | metafield_text }}{{ closest.product.metafields.models.model_info.value.hips | metafield_text }}",
-                "size_label": "{{ closest.product.metafields.model.wearing_size.value }}",
+                "model_label": "Model",
+                "size_label": "Size",
+                "height_label": "Height",
+                "bust_label": "Bust",
+                "waist_label": "Waist",
+                "hips_label": "Hips",
                 "alignment": "left",
                 "border": "none",
                 "border_width": 1,
@@ -397,10 +404,16 @@
               "blocks": {}
             }
           },
-          "block_order": ["product_card_gallery_DNizbJ", "product_title_M7MJkb", "price_gLWgA6"]
+          "block_order": [
+            "product_card_gallery_DNizbJ",
+            "product_title_M7MJkb",
+            "price_gLWgA6"
+          ]
         }
       },
-      "block_order": ["text_cbcgyb"],
+      "block_order": [
+        "text_cbcgyb"
+      ],
       "name": "t:names.product_recommendations",
       "settings": {
         "product": "{{ closest.product }}",
@@ -422,5 +435,8 @@
       }
     }
   },
-  "order": ["main", "product_recommendations_qggXJq"]
+  "order": [
+    "main",
+    "product_recommendations_qggXJq"
+  ]
 }
