@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */ {
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -70,7 +71,6 @@
               "type": "group",
               "name": "Header",
               "settings": {
-                "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
@@ -98,6 +98,9 @@
                 "overlay_color": "#00000026",
                 "overlay_style": "solid",
                 "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -153,7 +156,10 @@
                   "blocks": {}
                 }
               },
-              "block_order": ["text_xrnftG", "price_tVjtKg"]
+              "block_order": [
+                "text_xrnftG",
+                "price_tVjtKg"
+              ]
             },
             "divider_VJhene": {
               "type": "_divider",
@@ -185,6 +191,7 @@
               "settings": {
                 "stacking": true,
                 "show_pickup_availability": false,
+                "gift_card_form": true,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -218,10 +225,10 @@
               "type": "model-info",
               "name": "Model info",
               "settings": {
-                "heading": "",
+                "heading": "Informações da modelo",
                 "heading_style": "heading",
-                "model_label": "",
-                "size_label": "",
+                "model_label": "{{ closest.product.metafields.models.model_info.value.name.value }}{{ closest.product.metafields.models.model_info.value.bust | metafield_text }}{{ closest.product.metafields.models.model_info.value.height | metafield_text }}{{ closest.product.metafields.models.model_info.value.waist | metafield_text }}{{ closest.product.metafields.models.model_info.value.hips | metafield_text }}",
+                "size_label": "{{ closest.product.metafields.model.wearing_size.value }}",
                 "alignment": "left",
                 "border": "none",
                 "border_width": 1,
@@ -393,10 +400,16 @@
               "blocks": {}
             }
           },
-          "block_order": ["product_card_gallery_DNizbJ", "product_title_M7MJkb", "price_gLWgA6"]
+          "block_order": [
+            "product_card_gallery_DNizbJ",
+            "product_title_M7MJkb",
+            "price_gLWgA6"
+          ]
         }
       },
-      "block_order": ["text_cbcgyb"],
+      "block_order": [
+        "text_cbcgyb"
+      ],
       "name": "t:names.product_recommendations",
       "settings": {
         "product": "{{ closest.product }}",
@@ -418,5 +431,8 @@
       }
     }
   },
-  "order": ["main", "product_recommendations_qggXJq"]
+  "order": [
+    "main",
+    "product_recommendations_qggXJq"
+  ]
 }
