@@ -56,70 +56,24 @@
   endif
 -%}
 
-  {% if has_content %}
-    <div
-      class="model-info-block spacing-style border-style"
-      style="
-        {% render 'spacing-style', settings: block_settings %}
-        {% render 'border-override', settings: block_settings %}
-        text-align: {{ block_settings.alignment }};
-      "
-      {{ block.shopify_attributes }}
-    >
-      {% if block_settings.heading != blank %}
-        <p class="model-info-block__heading {{ block_settings.heading_style | default: 'heading' }}">
-          {{ block_settings.heading }}
-        </p>
-      {% endif %}
-  
-      <div class="model-info-block__card">
-        {% if model_name != blank or wearing_size != blank %}
-          <div class="model-info-block__identity">
-            {% if model_name != blank %}
-              <div class="model-info-block__identity-item">
-                <span class="model-info-block__label">{{ block_settings.model_label | default: 'Model' }}</span>
-                <span class="model-info-block__value">{{ model_name }}</span>
-              </div>
-            {% endif %}
-            {% if wearing_size != blank %}
-              <div class="model-info-block__identity-item model-info-block__identity-item--pill">
-                <span class="model-info-block__label">{{ block_settings.size_label | default: 'Wearing size' }}</span>
-                <span class="model-info-block__pill">{{ wearing_size }}</span>
-              </div>
-            {% endif %}
-          </div>
-        {% endif %}
+<script src="{{ 'model-info.js' | asset_url }}" defer></script>
 
-        {% if bust_measurement != blank or height_measurement != blank or waist_measurement != blank or hips_measurement != blank %}
-          <div class="model-info-block__metrics">
-            {% if height_measurement != blank %}
-              <div class="model-info-block__metric">
-                <span class="model-info-block__metric-label">{{ block_settings.height_label | default: 'Height' }}</span>
-                <span class="model-info-block__metric-value">{{ height_measurement.value }}</span>
-              </div>
-            {% endif %}
-            {% if bust_measurement != blank %}
-              <div class="model-info-block__metric">
-                <span class="model-info-block__metric-label">{{ block_settings.bust_label | default: 'Bust' }}</span>
-                <span class="model-info-block__metric-value">{{ bust_measurement.value  }}</span>
-              </div>
-            {% endif %}
-            {% if waist_measurement != blank %}
-              <div class="model-info-block__metric">
-                <span class="model-info-block__metric-label">{{ block_settings.waist_label | default: 'Waist' }}</span>
-                <span class="model-info-block__metric-value">{{ waist_measurement.value  }}</span>
-              </div>
-            {% endif %}
-            {% if hips_measurement != blank %}
-              <div class="model-info-block__metric">
-                <span class="model-info-block__metric-label">{{ block_settings.hips_label | default: 'Hips' }}</span>
-                <span class="model-info-block__metric-value">{{ hips_measurement.value  }}</span>
-              </div>
-            {% endif %}
-          </div>
-        {% endif %}
-      </div>
-    </div>
+  {% if has_content %}
+    <model-info-card
+      model="{{ model_name | escape }}"
+      wearing-size="{{ wearing_size | escape }}"
+      height="{{ height_measurement.value }}"
+      bust="{{ bust_measurement.value }}"
+      waist="{{ waist_measurement.value }}"
+      hips="{{ hips_measurement.value }}"
+      model-label="{{ block_settings.model_label | default: 'Model' }}"
+      size-label="{{ block_settings.size_label | default: 'Wearing size' }}"
+      height-label="{{ block_settings.height_label | default: 'Height' }}"
+      bust-label="{{ block_settings.bust_label | default: 'Bust' }}"
+      waist-label="{{ block_settings.waist_label | default: 'Waist' }}"
+      hips-label="{{ block_settings.hips_label | default: 'Hips' }}"
+      {{ block.shopify_attributes }}
+    ></model-info-card>
   {% elsif request.design_mode %}
     <div
       class="model-info-block model-info-block--placeholder spacing-style"
