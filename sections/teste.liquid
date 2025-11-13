@@ -1,0 +1,35 @@
+<script src="{{ 'teste.js' | asset_url }}" type="module"></script>
+
+<section class="last-units-counter">
+  <h2>{{ section.settings.text }}</h2>
+  <div class="product-list">
+    {% for block in section.blocks %}
+      <gabriel-teste class="product-item">
+        <button data-variant-id="{{ block.settings.product.selected_or_first_available_variant.id }}">{{ block.settings.product.title }}</button>
+      </gabriel-teste>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Last Units Counter",
+  "settings": [{"type": "text", "id": "text", "label": "Titulo"}],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product", "id": "product", "label": "Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Last Units Counter"
+    }
+  ]
+}
+{% endschema %}
